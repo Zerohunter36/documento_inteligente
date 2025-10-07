@@ -185,3 +185,14 @@ docker build -t nextract-frontend ./frontend
 ## Licencia
 
 MIT © 2024 Mx Mart Demo
+
+## Vista previa estática
+
+Para compartir rápidamente la apariencia del dashboard sin levantar el entorno de desarrollo, se incluye una página estática en `frontend/public/demo-preview.html`. Puedes abrirla con cualquier servidor web simple:
+
+```bash
+cd frontend/public
+python -m http.server 4173
+```
+
+Luego visita `http://localhost:4173/demo-preview.html` en tu navegador.

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Portal NEXTRACT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { background: radial-gradient(circle at top, #0f172a, #030712); }
+    </style>
+  </head>
+  <body class="min-h-screen text-slate-100">
+    <div class="flex flex-col min-h-screen">
+      <header class="border-b border-white/10 bg-white/5 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/80 text-xl font-semibold">
+              MX
+            </div>
+            <div>
+              <p class="text-xs uppercase tracking-wide text-indigo-200">Portal Documentos</p>
+              <h1 class="text-lg font-semibold">Mx Mart NEXTRACT</h1>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-xs text-slate-300">Hola, María Pérez</p>
+            <p class="text-sm font-medium text-white">Plan Enterprise</p>
+          </div>
+        </div>
+      </header>
+
+      <main class="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-6 py-10">
+        <section class="grid gap-6 md:grid-cols-3">
+          <article class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-indigo-500/10">
+            <p class="text-sm text-indigo-200">Hojas disponibles</p>
+            <p class="mt-3 text-4xl font-semibold text-white">128</p>
+            <p class="mt-2 text-xs text-slate-300">Actualizado hace 2 minutos</p>
+          </article>
+          <article class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-indigo-500/10">
+            <p class="text-sm text-indigo-200">Documentos procesados</p>
+            <p class="mt-3 text-4xl font-semibold text-white">342</p>
+            <p class="mt-2 text-xs text-slate-300">Periodo actual</p>
+          </article>
+          <article class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-indigo-500/10">
+            <p class="text-sm text-indigo-200">Excedente</p>
+            <p class="mt-3 text-4xl font-semibold text-amber-300">+12</p>
+            <p class="mt-2 text-xs text-slate-300">Costo adicional estimado $240 MXN</p>
+          </article>
+        </section>
+
+        <section class="grid gap-6 lg:grid-cols-[2fr,1fr]">
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-indigo-500/10">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-semibold text-white">Historial de documentos</h2>
+                <p class="text-sm text-slate-300">Seguimiento en tiempo real de tus cargas recientes</p>
+              </div>
+              <button class="rounded-full border border-indigo-400/50 px-4 py-2 text-sm font-medium text-indigo-200 transition hover:border-indigo-300 hover:text-white">
+                Exportar reporte
+              </button>
+            </div>
+            <div class="mt-6 overflow-hidden rounded-2xl border border-white/5">
+              <table class="min-w-full divide-y divide-white/10 text-sm">
+                <thead class="bg-white/5 text-left text-xs uppercase tracking-wide text-slate-300">
+                  <tr>
+                    <th class="px-4 py-3">Fecha</th>
+                    <th class="px-4 py-3">Nombre</th>
+                    <th class="px-4 py-3">Tipo</th>
+                    <th class="px-4 py-3">Hojas</th>
+                    <th class="px-4 py-3">Estado</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                  <tr class="bg-white/5">
+                    <td class="px-4 py-3 text-slate-200">07 Oct 2025</td>
+                    <td class="px-4 py-3 font-medium text-white">Factura_2031.pdf</td>
+                    <td class="px-4 py-3 text-slate-200">Factura CFDI</td>
+                    <td class="px-4 py-3 text-slate-200">3</td>
+                    <td class="px-4 py-3">
+                      <span class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-200">Completado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 text-slate-200">07 Oct 2025</td>
+                    <td class="px-4 py-3 font-medium text-white">Identificacion_JPG</td>
+                    <td class="px-4 py-3 text-slate-200">Identificación</td>
+                    <td class="px-4 py-3 text-slate-200">1</td>
+                    <td class="px-4 py-3">
+                      <span class="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-200">En proceso</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 text-slate-200">06 Oct 2025</td>
+                    <td class="px-4 py-3 font-medium text-white">Contrato_Rev.pdf</td>
+                    <td class="px-4 py-3 text-slate-200">Contrato</td>
+                    <td class="px-4 py-3 text-slate-200">5</td>
+                    <td class="px-4 py-3">
+                      <span class="rounded-full bg-slate-500/30 px-3 py-1 text-xs font-semibold text-slate-200">Pendiente</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="flex flex-col gap-6">
+            <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-purple-500/10 p-6 shadow-lg shadow-indigo-500/10">
+              <h2 class="text-lg font-semibold text-white">Subir nuevo documento</h2>
+              <p class="mt-1 text-sm text-indigo-100">Arrastra y suelta tu PDF o imagen, o selecciona desde tu equipo.</p>
+              <div class="mt-5 flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-indigo-300/60 bg-white/5 p-8 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-12 w-12 text-indigo-200">
+                  <path d="M12 2a5 5 0 00-5 5v2H5a3 3 0 00-3 3v6a3 3 0 003 3h14a3 3 0 003-3v-6a3 3 0 00-3-3h-2V7a5 5 0 00-5-5zm-3 7V7a3 3 0 016 0v2H9zm3 6a2 2 0 100-4 2 2 0 000 4z" />
+                </svg>
+                <p class="text-sm font-medium text-white">Arrastra archivos aquí</p>
+                <p class="text-xs text-indigo-100">Formatos permitidos: PDF, JPG, PNG</p>
+                <button class="mt-3 rounded-full bg-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-400">Seleccionar archivo</button>
+              </div>
+            </div>
+            <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-indigo-500/10">
+              <h2 class="text-lg font-semibold text-white">Saldo de créditos</h2>
+              <dl class="mt-4 space-y-3 text-sm">
+                <div class="flex items-center justify-between">
+                  <dt class="text-slate-300">Paquete contratado</dt>
+                  <dd class="font-semibold text-white">500 hojas</dd>
+                </div>
+                <div class="flex items-center justify-between">
+                  <dt class="text-slate-300">Hojas utilizadas</dt>
+                  <dd class="font-semibold text-white">372</dd>
+                </div>
+                <div class="flex items-center justify-between">
+                  <dt class="text-slate-300">Costo excedente</dt>
+                  <dd class="font-semibold text-amber-200">$240 MXN</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="border-t border-white/10 bg-white/5">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 text-xs text-slate-400">
+          <p>© 2025 Mx Mart Technologies. Todos los derechos reservados.</p>
+          <div class="flex items-center gap-4">
+            <a href="#" class="hover:text-indigo-200">Soporte</a>
+            <a href="#" class="hover:text-indigo-200">Términos</a>
+            <a href="#" class="hover:text-indigo-200">Privacidad</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
