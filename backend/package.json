@@ -1,7 +1,7 @@
 {
-  "name": "nextract-backend",
+  "name": "nubacom-backend",
   "version": "1.0.0",
-  "description": "Backend API for Mx Mart NEXTRACT inspired portal",
+  "description": "Backend API for Nubacom document automation portal",
   "main": "src/index.js",
   "type": "module",
   "scripts": {

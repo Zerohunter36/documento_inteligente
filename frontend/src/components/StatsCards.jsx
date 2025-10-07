@@ -19,7 +19,7 @@ export default function StatsCards({ stats }) {
           <div className="px-6 py-6">
             <p className="text-3xl font-bold text-accent">{data[card.key] ?? 0}</p>
             {card.key === 'overagePages' && stats?.overageCost > 0 && (
-              <p className="text-sm text-amber-600 mt-2">
+              <p className="text-sm text-secondary mt-2">
                 Costo adicional estimado: ${stats.overageCost.toFixed(2)} MXN
               </p>
             )}

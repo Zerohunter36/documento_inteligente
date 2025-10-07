@@ -6,13 +6,13 @@ export default function AuthLayout({ title, subtitle, children }) {
       <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 bg-white shadow-2xl rounded-3xl overflow-hidden">
         <div className="bg-gradient-to-b from-primary to-secondary text-white p-10 flex flex-col justify-between">
           <div>
-            <img src="/logo-nextract.svg" alt="NEXTRACT" className="h-12 mb-8" />
-            <h2 className="text-3xl font-bold mb-4">Mx Mart NEXTRACT</h2>
+            <img src="/logo-nubacom.svg" alt="Nubacom" className="h-12 mb-8" />
+            <h2 className="text-3xl font-bold mb-4">Portal Nubacom</h2>
             <p className="text-lg opacity-90">
               Automatiza la captura de datos y controla tus hojas disponibles con un panel moderno.
             </p>
           </div>
-          <div className="text-sm opacity-80">© {new Date().getFullYear()} Mx Mart de México S.A. de C.V.</div>
+          <div className="text-sm opacity-80">© {new Date().getFullYear()} Nubacom SA de CV, todos los derechos reservados.</div>
         </div>
         <div className="p-10">
           <div className="mb-10">

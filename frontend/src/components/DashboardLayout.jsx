@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }) {
       <header className="bg-white shadow-sm border-b border-slate-100">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo-nextract.svg" alt="Nextract" className="h-10" />
+            <img src="/logo-nubacom.svg" alt="Nubacom" className="h-10" />
             <div>
               <p className="text-sm text-slate-500">Panel de Administración</p>
               <p className="text-lg font-semibold text-accent">Bienvenido, {user?.displayName}</p>
@@ -28,6 +28,11 @@ export default function DashboardLayout({ children }) {
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-4 py-10">{children}</main>
+      <footer className="bg-white border-t border-slate-100">
+        <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-slate-500 text-center sm:text-left">
+          © {new Date().getFullYear()} Nubacom SA de CV, todos los derechos reservados.
+        </div>
+      </footer>
     </div>
   );
 }

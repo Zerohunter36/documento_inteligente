@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 140" role="img" aria-labelledby="title">
+  <title id="title">Nubacom</title>
+  <g fill="#e6531f">
+    <path d="M24 24h44v54l92-54h44v92h-44V86L68 132H24z"/>
+    <path d="M224 24c39.6 0 72 32.4 72 72s-32.4 72-72 72h-46V140h46c24.9 0 45-20.1 45-45s-20.1-45-45-45h-46V24z"/>
+    <text x="0" y="134" font-family="'Montserrat', 'Segoe UI', sans-serif" font-size="48" font-weight="700" letter-spacing="6">
+      NUBACOM
+    </text>
+  </g>
+</svg>

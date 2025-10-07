@@ -1,11 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Nubacom</title>
   <defs>
-    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#3a7bd5"/>
-      <stop offset="1" stop-color="#00d2ff"/>
+    <linearGradient id="nubagrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6531f" />
+      <stop offset="1" stop-color="#f28c34" />
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="16" fill="url(#grad)"/>
-  <path d="M18 20L32 34L46 20" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M18 34L32 48L46 34" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="64" height="64" rx="16" fill="url(#nubagrad)" />
+  <path d="M14 18h8v14l20-14h8v28h-8V32L22 46h-8z" fill="#fff" />
+  <path d="M38 18c7.5 0 14 6.5 14 14.5S45.5 47 38 47h-7v-6h7c4.6 0 8-3.6 8-8.5S42.6 24 38 24h-7v-6z" fill="#fff" />
 </svg>

@@ -1,6 +1,6 @@
-# Portal Mx Mart NEXTRACT
+# Portal Nubacom Document AI
 
-Aplicación full-stack que replica el portal de usuarios de Mx Mart NEXTRACT para procesar documentos con Google Document AI, administrar hojas disponibles y generar reportes en Excel.
+Aplicación full-stack que replica el portal de usuarios de Nubacom para procesar documentos con Google Document AI, administrar hojas disponibles y generar reportes en Excel.
 
 ## Arquitectura
 
@@ -176,15 +176,15 @@ Incluye en `public/plantillas/` tus archivos base y envía el `templatePath` en 
 
 ```bash
 # Backend
-docker build -t nextract-backend ./backend
+docker build -t nubacom-backend ./backend
 
 # Frontend
-docker build -t nextract-frontend ./frontend
+docker build -t nubacom-frontend ./frontend
 ```
 
 ## Licencia
 
-MIT © 2024 Mx Mart Demo
+MIT © 2024 Nubacom SA de CV
 
 ## Vista previa estática
 
