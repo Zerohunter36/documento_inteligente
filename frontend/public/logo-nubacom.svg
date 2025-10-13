@@ -1,10 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 140" role="img" aria-labelledby="title">
-  <title id="title">Nubacom</title>
-  <g fill="#e6531f">
-    <path d="M24 24h44v54l92-54h44v92h-44V86L68 132H24z"/>
-    <path d="M224 24c39.6 0 72 32.4 72 72s-32.4 72-72 72h-46V140h46c24.9 0 45-20.1 45-45s-20.1-45-45-45h-46V24z"/>
-    <text x="0" y="134" font-family="'Montserrat', 'Segoe UI', sans-serif" font-size="48" font-weight="700" letter-spacing="6">
-      NUBACOM
-    </text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" role="img" aria-labelledby="title desc">
+  <title id="title">Nubacom - logotipo oficial</title>
+  <desc id="desc">Símbolo NC en azul oscuro y naranja con la palabra Nubacom</desc>
+  <defs>
+    <linearGradient id="portal-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a1628" />
+      <stop offset="100%" stop-color="#172b4d" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(40 36)">
+    <path d="M0 12c0-6.627 5.373-12 12-12h60c6.627 0 12 5.373 12 12v81.5l97.9-81.8A12 12 0 0 1 194.8 8h61.2c6.627 0 12 5.373 12 12v148c0 6.627-5.373 12-12 12h-61.2c-6.627 0-12-5.373-12-12v-82.3L84 167.7a12 12 0 0 1-19.6-9.2V36H12C5.373 36 0 30.627 0 24Z" fill="#0a1628"/>
+    <circle cx="266" cy="44" r="30" fill="#f05a28" />
+    <path d="M254 0h80c61 0 110 49 110 110s-49 110-110 110h-80c-6.627 0-12-5.373-12-12V122c0-6.627 5.373-12 12-12h80c20.435 0 37 16.565 37 37s-16.565 37-37 37h-53" stroke="#0a1628" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+  <g transform="translate(40 210)" font-family="'Poppins', 'Segoe UI', sans-serif" font-size="94" font-weight="700" letter-spacing="6">
+    <tspan fill="#0a1628">NUBA</tspan>
+    <tspan fill="#f05a28">COM</tspan>
   </g>
 </svg>
