@@ -1,7 +1,6 @@
-export function calculateCreditsUsage(userDoc, pagesUsed, overageCostPerPage) {
-  const data = userDoc.data() || {};
-  const quota = data.pageQuota || 0;
-  const used = data.pagesUsed || 0;
+export function calculateCreditsUsage(userData, pagesUsed, overageCostPerPage) {
+  const quota = userData?.pageQuota || 0;
+  const used = userData?.pagesUsed || 0;
   const newTotal = used + pagesUsed;
 
   let overagePages = 0;

@@ -1,5 +1,5 @@
 import express from 'express';
-import { firestore } from '../config.js';
+import { supabase } from '../config.js';
 import { authenticate } from '../middleware.js';
 
 const router = express.Router();
@@ -11,18 +11,31 @@ router.post('/bootstrap', authenticate, async (req, res) => {
   }
 
   try {
-    const userRef = firestore.collection('users').doc(uid);
-    const snapshot = await userRef.get();
+    const { data, error } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', uid)
+      .maybeSingle();
 
-    if (!snapshot.exists) {
-      await userRef.set({
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      const { error: insertError } = await supabase.from('users').insert({
+        id: uid,
         email,
-        displayName: displayName || email,
-        pageQuota: 1000,
-        pagesUsed: 0,
-        overagePages: 0,
-        createdAt: new Date().toISOString(),
+        display_name: displayName || email,
+        page_quota: 1000,
+        pages_used: 0,
+        overage_pages: 0,
+        overage_cost: 0,
+        created_at: new Date().toISOString(),
       });
+
+      if (insertError) {
+        throw insertError;
+      }
     }
 
     return res.json({ message: 'Usuario listo' });

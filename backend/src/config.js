@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import admin from 'firebase-admin';
+import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
 
@@ -14,7 +15,22 @@ if (!admin.apps.length) {
   });
 }
 
-export const firestore = admin.firestore();
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error('SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY (o SUPABASE_SERVICE_KEY) son requeridos');
+}
+
+export const supabase = createClient(
+  supabaseUrl,
+  supabaseServiceKey,
+  {
+    auth: { persistSession: false },
+  }
+);
+
 export const auth = admin.auth();
 export const storageBucket = process.env.FIREBASE_STORAGE_BUCKET
   ? admin.storage().bucket(process.env.FIREBASE_STORAGE_BUCKET)

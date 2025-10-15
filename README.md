@@ -7,7 +7,7 @@ Aplicación full-stack que replica el portal de usuarios de Nubacom para procesa
 - **Frontend**: React + Vite + Tailwind CSS
 - **Backend**: Node.js + Express
 - **Autenticación**: Firebase Authentication (tokens verificados con Firebase Admin en el backend)
-- **Base de datos**: Firestore
+- **Base de datos**: Supabase (PostgreSQL administrado)
 - **Almacenamiento**: Firebase Storage / Google Cloud Storage
 - **OCR y extracción**: Google Document AI
 - **Generación de Excel**: ExcelJS
@@ -15,10 +15,11 @@ Aplicación full-stack que replica el portal de usuarios de Nubacom para procesa
 
 ## Requisitos previos
 
-1. Cuenta de Firebase/GCP con un proyecto habilitado para Firestore, Storage y Document AI.
-2. Crear un **Service Account** con permisos de `roles/firestore.user`, `roles/storage.objectAdmin` y `roles/documentai.apiUser`. Generar la llave JSON.
+1. Cuenta de Firebase/GCP con un proyecto habilitado para Storage y Document AI.
+2. Crear un **Service Account** con permisos de `roles/storage.objectAdmin` y `roles/documentai.apiUser`. Generar la llave JSON.
 3. Configurar Firebase Authentication con método Email/Password habilitado.
-4. Instalar Node.js 18+ y npm.
+4. Crear un proyecto en [Supabase](https://supabase.com/) y habilitar una base de datos Postgres.
+5. Instalar Node.js 18+ y npm.
 
 ## Configuración
 
@@ -34,6 +35,7 @@ Aplicación full-stack que replica el portal de usuarios de Nubacom para procesa
    - Para `FIREBASE_SERVICE_ACCOUNT` pega el JSON de la llave de servicio en una sola línea.
    - `DOCUMENT_AI_PROCESSOR_ID` corresponde al ID del processor de Document AI (por ejemplo `1234567890abcdef`).
    - `DOCUMENT_AI_LOCATION` suele ser `us` o `eu`.
+   - Define `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` (o `SUPABASE_SERVICE_KEY`) desde la sección **Project Settings → API** de tu proyecto Supabase.
 
 2. Instala dependencias y ejecuta el servidor:
 
@@ -43,6 +45,38 @@ Aplicación full-stack que replica el portal de usuarios de Nubacom para procesa
    ```
 
    El API quedará en `http://localhost:8080`.
+
+3. Crea las tablas necesarias en Supabase ejecutando el siguiente script SQL (desde la consola SQL del panel):
+
+   ```sql
+   create table if not exists users (
+     id text primary key,
+     email text,
+     display_name text,
+     page_quota integer default 1000,
+     pages_used integer default 0,
+     overage_pages integer default 0,
+     overage_cost numeric default 0,
+     created_at timestamptz default now()
+   );
+
+   create table if not exists documents (
+     id uuid primary key,
+     user_id text references users(id) on delete cascade,
+     original_file_name text,
+     mime_type text,
+     pages_used integer,
+     excel_file_path text,
+     storage_path text,
+     excel_base64 text,
+     fields jsonb,
+     status text,
+     created_at timestamptz default now()
+   );
+
+   create index if not exists documents_user_id_created_at_idx
+     on documents(user_id, created_at desc);
+   ```
 
 ### Frontend
 
@@ -67,7 +101,7 @@ Aplicación full-stack que replica el portal de usuarios de Nubacom para procesa
 ## Flujo de uso
 
 1. Los usuarios se registran o inician sesión mediante Firebase Auth.
-2. El cliente obtiene el `idToken` del usuario y llama a `/api/auth/bootstrap` para asegurar que exista la ficha de créditos en Firestore.
+2. El cliente obtiene el `idToken` del usuario y llama a `/api/auth/bootstrap` para asegurar que exista la ficha de créditos en Supabase.
 3. En el dashboard se muestran:
    - Hojas contratadas, usadas y disponibles.
    - Excedentes y costo adicional estimado.
@@ -77,9 +111,9 @@ Aplicación full-stack que replica el portal de usuarios de Nubacom para procesa
    - El backend lo almacena en Cloud Storage.
    - Se ejecuta Document AI para extraer entidades.
    - Se genera un Excel basado en la plantilla preconfigurada (`generateExcel`).
-   - Se actualizan los créditos y se registra el historial en Firestore.
-- Se entrega una URL para descargar el Excel resultante.
-   - Si no cuentas con Storage configurado, el backend almacena el Excel en Firestore codificado en Base64 para poder descargarlo desde la interfaz.
+   - Se actualizan los créditos y se registra el historial en Supabase.
+   - Se entrega una URL para descargar el Excel resultante.
+   - Si no cuentas con Storage configurado, el backend almacena el Excel en Supabase como Base64 para poder descargarlo desde la interfaz.
 
 Si no se configura Document AI, el backend retornará datos simulados para facilitar las pruebas de interfaz.
 
@@ -93,7 +127,7 @@ Si no se configura Document AI, el backend retornará datos simulados para facil
 
 | Método | Endpoint | Descripción |
 | ------ | -------- | ----------- |
-| `POST` | `/auth/bootstrap` | Garantiza que exista el perfil del usuario en Firestore. |
+| `POST` | `/auth/bootstrap` | Garantiza que exista el perfil del usuario en Supabase. |
 | `GET` | `/documents` | Obtiene estadísticas y documentos procesados. |
 | `POST` | `/documents/upload` | Recibe un archivo, invoca Document AI y genera el Excel. |
 | `GET` | `/documents/:id/excel` | Descarga el Excel generado. |

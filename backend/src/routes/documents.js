@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-import { firestore, storageBucket, appConfig } from '../config.js';
+import { supabase, storageBucket, appConfig } from '../config.js';
 import { authenticate } from '../middleware.js';
 import { processDocument } from '../services/documentAi.js';
 import { generateExcel } from '../services/excel.js';
@@ -13,20 +13,65 @@ const router = express.Router();
 const templatesDir = path.resolve(process.cwd(), 'public', 'plantillas');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
 
+function mapUserRecord(record) {
+  if (!record) {
+    return null;
+  }
+
+  return {
+    id: record.id,
+    email: record.email,
+    displayName: record.display_name,
+    pageQuota: record.page_quota || 0,
+    pagesUsed: record.pages_used || 0,
+    overagePages: record.overage_pages || 0,
+    overageCost: record.overage_cost || 0,
+    createdAt: record.created_at,
+  };
+}
+
+function mapDocumentRecord(record) {
+  return {
+    id: record.id,
+    documentId: record.id,
+    originalFileName: record.original_file_name,
+    mimeType: record.mime_type,
+    pagesUsed: record.pages_used,
+    excelFilePath: record.excel_file_path,
+    storagePath: record.storage_path,
+    excelBase64: record.excel_base64,
+    fields: record.fields,
+    createdAt: record.created_at,
+    status: record.status,
+  };
+}
+
 router.get('/', authenticate, async (req, res) => {
   try {
-    const docsSnapshot = await firestore
-      .collection('users')
-      .doc(req.user.uid)
-      .collection('documents')
-      .orderBy('createdAt', 'desc')
-      .limit(50)
-      .get();
+    const { data: documentRows, error: documentsError } = await supabase
+      .from('documents')
+      .select('*')
+      .eq('user_id', req.user.uid)
+      .order('created_at', { ascending: false })
+      .limit(50);
 
-    const documents = docsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    if (documentsError) {
+      throw documentsError;
+    }
 
-    const userSnapshot = await firestore.collection('users').doc(req.user.uid).get();
-    const userData = userSnapshot.data() || {};
+    const documents = (documentRows || []).map(mapDocumentRecord);
+
+    const { data: userRow, error: userError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', req.user.uid)
+      .maybeSingle();
+
+    if (userError) {
+      throw userError;
+    }
+
+    const userData = mapUserRecord(userRow) || {};
 
     return res.json({
       documents,
@@ -50,18 +95,41 @@ router.post('/upload', authenticate, upload.single('file'), async (req, res) => 
   try {
     const { buffer, mimetype, originalname } = req.file;
     const { templatePath } = req.body;
-    const userRef = firestore.collection('users').doc(req.user.uid);
-    let userDoc = await userRef.get();
+    const { data: existingUser, error: fetchError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', req.user.uid)
+      .maybeSingle();
 
-    if (!userDoc.exists) {
-      await userRef.set({
-        pageQuota: 1000,
-        pagesUsed: 0,
-        overagePages: 0,
-        overageCost: 0,
-        createdAt: new Date().toISOString(),
-      });
-      userDoc = await userRef.get();
+    if (fetchError) {
+      throw fetchError;
+    }
+
+    let userData = mapUserRecord(existingUser);
+
+    if (!userData) {
+      const defaultUser = {
+        id: req.user.uid,
+        email: req.user.email || null,
+        display_name: req.user.name || req.user.email || req.user.uid,
+        page_quota: 1000,
+        pages_used: 0,
+        overage_pages: 0,
+        overage_cost: 0,
+        created_at: new Date().toISOString(),
+      };
+
+      const { data: insertedUser, error: insertError } = await supabase
+        .from('users')
+        .insert(defaultUser)
+        .select()
+        .single();
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      userData = mapUserRecord(insertedUser);
     }
 
     let resolvedTemplate;
@@ -78,6 +146,7 @@ router.post('/upload', authenticate, upload.single('file'), async (req, res) => 
 
     const { pagesUsed, fields } = await processDocument(buffer, mimetype, originalname);
     const excelBuffer = await generateExcel(fields, resolvedTemplate);
+    const inlineExcelBase64 = Buffer.from(excelBuffer).toString('base64');
 
     const documentId = uuidv4();
     const originalFileName = `${req.user.uid}/${documentId}/${originalname}`;
@@ -90,35 +159,44 @@ router.post('/upload', authenticate, upload.single('file'), async (req, res) => 
       });
     }
 
-    const credits = calculateCreditsUsage(userDoc, pagesUsed, appConfig.overageCostPerPage);
+    const credits = calculateCreditsUsage(userData, pagesUsed, appConfig.overageCostPerPage);
 
-    await userRef.set(
-      {
-        pagesUsed: credits.newTotal,
-        overagePages: credits.overagePages,
-        overageCost: credits.overageCost,
-      },
-      { merge: true }
-    );
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({
+        pages_used: credits.newTotal,
+        overage_pages: credits.overagePages,
+        overage_cost: credits.overageCost,
+      })
+      .eq('id', req.user.uid);
 
-    const documentData = {
-      originalFileName: originalname,
-      documentId,
-      mimeType: mimetype,
-      pagesUsed,
-      excelFilePath: storageBucket ? excelFileName : null,
-      storagePath: storageBucket ? originalFileName : null,
-      excelBase64: storageBucket ? null : Buffer.from(excelBuffer).toString('base64'),
+    if (updateError) {
+      throw updateError;
+    }
+
+    const documentRecord = {
+      id: documentId,
+      user_id: req.user.uid,
+      original_file_name: originalname,
+      mime_type: mimetype,
+      pages_used: pagesUsed,
+      excel_file_path: storageBucket ? excelFileName : null,
+      storage_path: storageBucket ? originalFileName : null,
+      excel_base64: storageBucket ? null : inlineExcelBase64,
       fields,
-      createdAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
       status: 'procesado',
     };
 
-    await userRef.collection('documents').doc(documentId).set(documentData);
+    const { error: insertDocError } = await supabase.from('documents').insert(documentRecord);
+
+    if (insertDocError) {
+      throw insertDocError;
+    }
 
     return res.json({
       message: 'Documento procesado',
-      document: documentData,
+      document: mapDocumentRecord(documentRecord),
       stats: {
         quota: credits.quota,
         used: credits.newTotal,
@@ -126,7 +204,7 @@ router.post('/upload', authenticate, upload.single('file'), async (req, res) => 
         overageCost: credits.overageCost,
       },
       downloadUrl: storageBucket ? `/documents/${documentId}/excel` : null,
-      excelBase64: storageBucket ? undefined : Buffer.from(excelBuffer).toString('base64'),
+      excelBase64: storageBucket ? undefined : inlineExcelBase64,
     });
   } catch (error) {
     console.error(error);
@@ -137,18 +215,21 @@ router.post('/upload', authenticate, upload.single('file'), async (req, res) => 
 router.get('/:documentId/excel', authenticate, async (req, res) => {
   try {
     const { documentId } = req.params;
-    const docSnapshot = await firestore
-      .collection('users')
-      .doc(req.user.uid)
-      .collection('documents')
-      .doc(documentId)
-      .get();
+    const { data: docRow, error } = await supabase
+      .from('documents')
+      .select('excel_file_path')
+      .eq('id', documentId)
+      .eq('user_id', req.user.uid)
+      .maybeSingle();
 
-    if (!docSnapshot.exists) {
-      return res.status(404).json({ message: 'Documento no encontrado' });
+    if (error) {
+      throw error;
     }
 
-    const { excelFilePath } = docSnapshot.data();
+    if (!docRow) {
+      return res.status(404).json({ message: 'Documento no encontrado' });
+    }
+    const { excel_file_path: excelFilePath } = docRow;
 
     if (!storageBucket || !excelFilePath) {
       return res.status(400).json({ message: 'El almacenamiento no está configurado' });
